@@ -51,6 +51,10 @@ export interface AudioTrackProps extends JSX.AudioHTMLAttributes<HTMLAudioElemen
 export function AudioTrack(props: AudioTrackProps) {
   const trackReference = useEnsureTrackRef(props.trackRef)
 
+  type AudioContextWithSinkId = AudioContext & {
+    setSinkId?: (sinkId: string) => Promise<void>
+  }
+
   let mediaEl: HTMLAudioElement | undefined
 
   const { elementProps, isSubscribed, track, publication } = useMediaTrackBySourceOrName(
@@ -69,6 +73,10 @@ export function AudioTrack(props: AudioTrackProps) {
   const { activeDeviceId } = useMediaDeviceSelect({ kind: 'audiooutput' })
 
   onCleanup(() => {
+    if (mediaEl) {
+      mediaEl.muted = false
+      mediaEl.volume = 1
+    }
     if (gainContext) {
       gainContext.gainNode.disconnect()
       gainContext.audioContext.close()
@@ -82,6 +90,10 @@ export function AudioTrack(props: AudioTrackProps) {
     }
     if (t instanceof RemoteAudioTrack) {
       if (!props.enableBoosting || props.volume <= 1) {
+        if (mediaEl) {
+          mediaEl.muted = false
+        }
+
         t.setVolume(props.volume)
 
         if (gainContext) {
@@ -93,16 +105,22 @@ export function AudioTrack(props: AudioTrackProps) {
         if (gainContext) {
           gainContext.gainNode.gain.value = props.volume
         } else {
+          if (mediaEl) {
+            // prevent the attached audio element from playing alongside the boosted Web Audio path
+            mediaEl.muted = true
+          }
+
           t.setVolume(0)
 
           const audioContext = new AudioContext()
+          const audioContextWithSinkId = audioContext as AudioContextWithSinkId
 
-          if ('setSinkId' in AudioContext.prototype) {
-            ;(audioContext as never as { setSinkId: (sinkId: string) => Promise<void> }).setSinkId(
-              activeDeviceId(),
-            )
-          } else {
-            console.error(`Browser does not support AudioContext#setSyncId!`)
+          if (audioContextWithSinkId.setSinkId && activeDeviceId()) {
+            audioContextWithSinkId.setSinkId(activeDeviceId()).catch(error => {
+              console.error(`Failed to set boosted audio output device`, error)
+            })
+          } else if (!audioContextWithSinkId.setSinkId) {
+            console.error(`Browser does not support AudioContext#setSinkId!`)
           }
 
           const gainNode = audioContext.createGain()

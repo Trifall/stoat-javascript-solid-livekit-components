@@ -3,18 +3,25 @@
 
 // @ts-ignore
 import type { Observable } from 'rxjs'
-import { createEffect, createSignal } from 'solid-js'
+import { Accessor, createEffect, createSignal, onCleanup } from 'solid-js'
+
+type ObservableSource<T> = Observable<T> | Accessor<Observable<T> | undefined> | undefined
 
 /**
  * @internal
  */
-export function useObservableState<T>(observable: Observable<T> | undefined, startWith: T) {
+export function useObservableState<T>(observable: ObservableSource<T>, startWith: T) {
   const [state, setState] = createSignal<T>(startWith)
+
   createEffect(() => {
+    const currentObservable = typeof observable === 'function' ? observable() : observable
+
     // observable state doesn't run in SSR
-    if (typeof window === 'undefined' || !observable) return
-    const subscription = observable.subscribe(setState)
-    return () => subscription.unsubscribe()
-  }, [observable])
+    if (typeof window === 'undefined' || !currentObservable) return
+
+    const subscription = currentObservable.subscribe(setState)
+    onCleanup(() => subscription.unsubscribe())
+  })
+
   return state
 }

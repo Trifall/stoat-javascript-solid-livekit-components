@@ -18,7 +18,7 @@ export function useIsEncrypted(participant?: Participant) {
 
   const observer = createMemo(() => encryptionStatusObservable(room(), p))
   const isEncrypted = useObservableState(
-    observer() as unknown as Observable<boolean>,
+    observer,
     p instanceof LocalParticipant ? p.isE2EEEnabled : p.isEncrypted,
   )
   return isEncrypted

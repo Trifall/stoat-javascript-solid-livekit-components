@@ -71,10 +71,14 @@ export function useMediaTrackBySourceOrName(
   })
 
   createEffect(() => {
-    // Set the orientation of the video track.
+    // Set the orientation of the video track
     // TODO: This does not handle changes in orientation after a track got published (e.g when rotating a phone camera from portrait to landscape).
     const pub = publication()
-    if (typeof pub?.dimensions?.width === 'number' && typeof pub.dimensions?.height === 'number') {
+    if (
+      pub?.dimensions &&
+      typeof pub.dimensions.width === 'number' &&
+      typeof pub.dimensions.height === 'number'
+    ) {
       const orientation_ = pub.dimensions.width > pub.dimensions.height ? 'landscape' : 'portrait'
       setOrientation(orientation_)
     }

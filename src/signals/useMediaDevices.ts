@@ -26,6 +26,6 @@ export function useMediaDevices({
     () => createMediaDeviceObserver(kind, onError),
   );
 
-  const devices = useObservableState(deviceObserver(), [] as MediaDeviceInfo[]);
+  const devices = useObservableState(deviceObserver, [] as MediaDeviceInfo[]);
   return devices;
 }

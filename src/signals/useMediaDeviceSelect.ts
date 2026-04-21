@@ -56,7 +56,7 @@ export function useMediaDeviceSelect({
     createMediaDeviceObserver(kind, onError, requestPermissions),
   )
 
-  const devices = useObservableState(deviceObserver(), [] as MediaDeviceInfo[])
+  const devices = useObservableState(deviceObserver, [] as MediaDeviceInfo[])
 
   // Active device management.
   const [currentDeviceId, setCurrentDeviceId] = createSignal(

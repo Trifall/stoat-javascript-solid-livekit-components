@@ -7,7 +7,6 @@ import { useObservableState } from './internal'
 import { createMemo } from 'solid-js'
 
 import type { Participant } from 'livekit-client'
-import type { Observable } from 'rxjs'
 
 /**
  * The `useIsSpeaking` hook returns a `boolean` that indicates if the participant is speaking or not.
@@ -19,8 +18,8 @@ import type { Observable } from 'rxjs'
  */
 export function useIsSpeaking(participant?: Participant) {
   const p = useEnsureParticipant(participant)
-  const observable = createMemo(() => createIsSpeakingObserver(p), [p])
-  const isSpeaking = useObservableState(observable() as unknown as Observable<boolean>, p.isSpeaking)
+  const observable = createMemo(() => createIsSpeakingObserver(p))
+  const isSpeaking = useObservableState(observable, p.isSpeaking)
 
   return isSpeaking
 }
