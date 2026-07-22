@@ -22,6 +22,9 @@ export function useConnectionState(room?: Room) {
   // passed room takes precedence, if not supplied get current room context
   const r = useEnsureRoom(room)
   const observable = createMemo(() => connectionStateObserver(r()))
-  const connectionState = useObservableState(observable() as unknown as Observable<ConnectionState>, r().state)
+  const connectionState = useObservableState(
+    observable() as unknown as Observable<ConnectionState>,
+    r().state,
+  )
   return connectionState
 }

@@ -1,9 +1,9 @@
 // @livekit/components-react@2.9.15
 // Apache-2.0
 
-import { createMediaDeviceObserver } from "@livekit/components-core";
-import { createMemo } from "solid-js";
-import { useObservableState } from "./internal";
+import { createMediaDeviceObserver } from '@livekit/components-core'
+import { createMemo } from 'solid-js'
+import { useObservableState } from './internal'
 
 /**
  * The `useMediaDevices` hook returns the list of media devices of a given kind.
@@ -19,13 +19,11 @@ export function useMediaDevices({
   kind,
   onError,
 }: {
-  kind: MediaDeviceKind;
-  onError?: (e: Error) => void;
+  kind: MediaDeviceKind
+  onError?: (e: Error) => void
 }) {
-  const deviceObserver = createMemo(
-    () => createMediaDeviceObserver(kind, onError),
-  );
+  const deviceObserver = createMemo(() => createMediaDeviceObserver(kind, onError))
 
-  const devices = useObservableState(deviceObserver(), [] as MediaDeviceInfo[]);
-  return devices;
+  const devices = useObservableState(deviceObserver(), [] as MediaDeviceInfo[])
+  return devices
 }
