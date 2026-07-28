@@ -47,11 +47,11 @@ export { useIsMuted } from './useIsMuted'
 
 export { useIsSpeaking } from './useIsSpeaking'
 
-export { useMediaDevices } from './useMediaDevices';
+export { useMediaDevices } from './useMediaDevices'
 
-export { useMediaDeviceSelect } from './useMediaDeviceSelect';
+export { useMediaDeviceSelect } from './useMediaDeviceSelect'
 
-export { useMediaTrackBySourceOrName } from './useMediaTrackBySourceOrName';
+export { useMediaTrackBySourceOrName } from './useMediaTrackBySourceOrName'
 
 export type { UseTracksHookReturnType, UseTracksOptions } from './useTracks'
 export { useTracks } from './useTracks'

@@ -6,8 +6,7 @@ import { useEnsureRoom } from '../context'
 import { useObservableState } from './internal'
 import { createMemo } from 'solid-js'
 
-import type { ConnectionState, Room } from 'livekit-client'
-import type { Observable } from 'rxjs'
+import type { Room } from 'livekit-client'
 
 /**
  * The `useConnectionState` hook allows you to simply implement your own `ConnectionState` component.
